@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,13 +48,21 @@ public class LongestCouple {
 
 	}
 
-	private static void checkFile(File fileName) {
-		if (!fileName.exists()) {
-			throw new IllegalArgumentException("This file does not exists.");
-		} else if (!fileName.isFile()) {
-			throw new IllegalArgumentException("This is not a file.");
-		} else if (!fileName.canRead()) {
-			throw new IllegalArgumentException("The file does not have read permissions.");
+	private static void checkFile(File fileName) throws FileNotFoundException {
+		FileInputStream inputStream = null;
+		
+		try {
+			inputStream = new FileInputStream(fileName);
+		}catch (FileNotFoundException e) {
+			e.getMessage();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.getMessage();
+				}
+			}
 		}
 	}
 
@@ -141,6 +151,3 @@ public class LongestCouple {
 
 	}
 }
-
-
-
