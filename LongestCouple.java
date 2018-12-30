@@ -50,10 +50,10 @@ public class LongestCouple {
 
 	private static void checkFile(File fileName) throws FileNotFoundException {
 		FileInputStream inputStream = null;
-		
+
 		try {
 			inputStream = new FileInputStream(fileName);
-		}catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			e.getMessage();
 		} finally {
 			if (inputStream != null) {
@@ -85,19 +85,23 @@ public class LongestCouple {
 				LocalDate dateFromB = LocalDate.parse(emplsInfo.get(j).get(COL_DATE_FROM));
 				LocalDate dateToB = ifNullReturnToday(emplsInfo.get(j).get(COL_DATE_TO));
 
-				if (!emplIDA.equals(emplIDB) 
-						&& projectIDA.equals(projectIDB)
+				if (!emplIDA.equals(emplIDB) && projectIDA.equals(projectIDB)
 						&& isSamePeriod(dateFromA, dateToA, dateFromB, dateToB)) {
 
-					String employeesID = emplsInfo.get(i).get(COL_EMPLID) 
-							+ " and " + emplsInfo.get(j).get(COL_EMPLID);
-					long period = overlapedPeriodOfDays(dateFromA, dateToA, dateFromB, dateToB);
+					String employeesID = "";
+					if (emplIDA.compareTo(emplIDB) < 0) {
+						employeesID = emplIDA + " and " + emplIDB;
+					} else {
+						employeesID = emplIDB + " and " + emplIDA;
+					}
+					long period = overlapedPeriodOfDays(dateFromA, dateToA, dateFromB, dateToB) + 1;
 
 					if (!teams.containsKey(employeesID)) {
 						teams.put(employeesID, period);
 					} else {
 						teams.replace(employeesID, teams.get(employeesID) + period);
 					}
+
 				}
 			}
 		}
@@ -141,12 +145,11 @@ public class LongestCouple {
 		} else {
 			long longestPeriod = Collections.max(teams.values());
 
-			System.out.printf("The employees, who worked together for the longest period" 
-					+ " (total of %d days):%n",	longestPeriod);
+			System.out.printf("The employees, who worked together for the longest period"
+					+ " (total of %d days) are:%n", longestPeriod);
 
-			teams.entrySet().stream()
-				.filter(entry -> entry.getValue() == longestPeriod)
-				.forEach(entry -> System.out.printf("%s%n", entry.getKey()));
+			teams.entrySet().stream().filter(entry -> entry.getValue() == longestPeriod)
+					.forEach(entry -> System.out.printf("%s%n", entry.getKey()));
 		}
 
 	}
