@@ -120,23 +120,20 @@ public class LongestCouple {
 
 	private static long overlapedPeriodOfDays(LocalDate startA, LocalDate endA, 
 			LocalDate startB, LocalDate endB) {
-		long period;
 
-		if (startA.isBefore(startB)) {
-			if (endA.isAfter(endB)) {
-				period = ChronoUnit.DAYS.between(startB, endB);
-			} else {
-				period = ChronoUnit.DAYS.between(startB, endA);
-			}
-		} else {
-			if (endA.isAfter(endB)) {
-				period = ChronoUnit.DAYS.between(startA, endB);
-			} else {
-				period = ChronoUnit.DAYS.between(startA, endA);
-			}
-		}
+		LocalDate soonestDate = getSoonestDate(startA, startB);
+		LocalDate oldestDate = getOldestDate(endA, endB);
+		long overlapedPeriod = ChronoUnit.DAYS.between(soonestDate, oldestDate);
 
-		return period;
+		return overlapedPeriod;
+	}
+
+	private static LocalDate getSoonestDate(LocalDate dateA, LocalDate dateB) {
+		return dateA.isAfter(dateB) ? dateA : dateB;
+	}
+
+	private static LocalDate getOldestDate(LocalDate dateA, LocalDate dateB) {
+		return dateA.isBefore(dateB) ? dateA : dateB;
 	}
 
 	private static void findLongestCouple(Map<String, Long> teams) {
